@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Price Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 26px;
+        }
+
+        .header button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: white;
+            color: #111827;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .top-section input {
+            width: 300px;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .change {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .market {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .time {
+            margin-top: 8px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .chart-box {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .chart-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 400px;
+        }
+
+        .empty {
+            text-align: center;
+            margin-top: 40px;
+            color: #6b7280;
+        }
+
+        .dark {
+            background: #0f172a;
+            color: #e5e7eb;
+        }
+
+        .dark .card,
+        .dark .chart-box {
+            background: #1e293b;
+        }
+
+        .dark .market,
+        .dark .time {
+            color: #94a3b8;
+        }
+
+        .dark .top-section input {
+            background: #1e293b;
+            color: white;
+            border-color: #475569;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 18px;
+            }
+
+            .container {
+                padding: 18px;
+            }
+
+            .top-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .top-section input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>₿ Crypto Price Dashboard</h1>
+        <button onclick="toggleTheme()">🌙 Theme</button>
+    </div>
+
+    <div class="container">
+
+        <div class="top-section">
+            <h2>Live Cryptocurrency Data</h2>
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search cryptocurrency..."
+                onkeyup="searchCrypto()"
+            >
+        </div>
+
+        <div class="cards" id="cryptoCards"></div>
+
+        <div class="chart-box">
+            <h2>Cryptocurrency Price Comparison</h2>
+
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="empty" id="emptyMessage"></div>
+
+    </div>
+
+    <script>
+        let cryptoData = [];
+        let priceChart;
+
+        async function loadData() {
+            try {
+                const response = await fetch("/chart-data");
+                cryptoData = await response.json();
+
+                displayData(cryptoData);
+                createChart(cryptoData);
+
+            } catch (error) {
+                document.getElementById("emptyMessage").innerText =
+                    "Unable to load cryptocurrency data.";
+            }
+        }
+
+        function displayData(data) {
+            const container = document.getElementById("cryptoCards");
+            const emptyMessage = document.getElementById("emptyMessage");
+
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+                emptyMessage.innerText = "No cryptocurrency data available.";
+                return;
+            }
+
+            emptyMessage.innerText = "";
+
+            data.forEach(coin => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                card.innerHTML = `
+                    <h3>${coin.Name}</h3>
+                    <div class="price">${coin.Price}</div>
+                    <div class="change">24H Change: ${coin.Change_24h}</div>
+                    <div class="market">Market Cap: ${coin.Market_Cap}</div>
+                    <div class="time">Updated: ${coin.Timestamp}</div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function getNumericPrice(price) {
+            let value = price.replace(/[$,]/g, "").trim();
+
+            if (value.includes("T")) {
+                return parseFloat(value) * 1000000000000;
+            }
+
+            if (value.includes("B")) {
+                return parseFloat(value) * 1000000000;
+            }
+
+            if (value.includes("M")) {
+                return parseFloat(value) * 1000000;
+            }
+
+            if (value.includes("K")) {
+                return parseFloat(value) * 1000;
+            }
+
+            return parseFloat(value);
+        }
+
+        function createChart(data) {
+            const labels = data.map(coin => coin.Name);
+            const prices = data.map(coin => getNumericPrice(coin.Price));
+
+            const ctx = document.getElementById("priceChart");
+
+            if (priceChart) {
+                priceChart.destroy();
+            }
+
+            priceChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Current Price",
+                        data: prices
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function searchCrypto() {
+            const searchValue =
+                document.getElementById("search").value.toLowerCase();
+
+            const filtered = cryptoData.filter(coin =>
+                coin.Name.toLowerCase().includes(searchValue)
+            );
+
+            displayData(filtered);
+            createChart(filtered);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+        }
+
+        loadData();
+
+        setInterval(loadData, 30000);
+    </script>
+
+</body>
+</html>
