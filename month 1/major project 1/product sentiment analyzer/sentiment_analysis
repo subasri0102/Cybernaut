@@ -1,0 +1,46 @@
+import pandas as pd
+from textblob import TextBlob
+from datetime import date, timedelta
+
+input_file = "data/scraped_reviews.csv"
+output_file = "data/sentiment_analysis.csv"
+
+df = pd.read_csv(input_file)
+
+def get_sentiment(text):
+    polarity = TextBlob(str(text)).sentiment.polarity
+
+    if polarity > 0:
+        sentiment = "Positive"
+    elif polarity < 0:
+        sentiment = "Negative"
+    else:
+        sentiment = "Neutral"
+
+    return sentiment, polarity
+
+results = df["review"].apply(get_sentiment)
+
+df["sentiment"] = results.apply(lambda x: x[0])
+df["polarity"] = results.apply(lambda x: x[1])
+
+df["date"] = [
+    date(2026, 9, 1) + timedelta(days=i)
+    for i in range(len(df))
+]
+
+df["rating"] = df["sentiment"].map({
+    "Positive": 5,
+    "Neutral": 3,
+    "Negative": 1
+})
+
+df = df[["date", "product", "review", "rating", "sentiment", "polarity"]]
+
+df.to_csv(output_file, index=False)
+
+print("SENTIMENT ANALYSIS COMPLETED")
+print("Total reviews:", len(df))
+print("\nSentiment Summary:")
+print(df["sentiment"].value_counts())
+print("\nSaved:", output_file)
