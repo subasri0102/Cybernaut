@@ -1,0 +1,26 @@
+date,product,review,rating,sentiment,polarity
+2026-08-24,boAt Rockerz 512 ANC,"Absolutely love these headphones! The battery life is excellent, sound quality is great and ANC works well. They are comfortable for long use and feel premium for the price.",5,Positive,0.72
+2026-09-02,boAt Rockerz 512 ANC,"Great fit, wireless and wired options work well. ANC is stunning and battery backup is very good. Mic voice clarity is also excellent.",5,Positive,0.68
+2026-05-01,boAt Rockerz 512 ANC,"Awesome headphone! The sound quality, bass and build quality are very good. The app also allows customization of bass, treble and mid.",5,Positive,0.78
+2026-08-31,boAt Rockerz 512 ANC,"It is perfect in all aspects. No ear pain even after long use. Sound quality and battery life are very good.",5,Positive,0.75
+2026-08-25,boAt Rockerz 512 ANC,"Worth it. ANC works fine, sound quality is good and battery lasts for a good amount of time. Build quality could be improved.",5,Positive,0.52
+2026-09-12,boAt Rockerz 650 Pro,"Worth the money. Comfort and sound quality are good, although connectivity sometimes has some bugs.",5,Positive,0.45
+2026-06-27,boAt Rockerz 650 Pro,"Excellent sound quality and massive battery life. The headphones provide very good battery backup and excellent sound quality for the price.",5,Positive,0.76
+2026-09-06,boAt Rockerz 650 Pro,"Product is very good and durable. Sound quality is good.",5,Positive,0.62
+2026-09-14,boAt Rockerz 650 Pro,"Nice product and great experience. The sound is good.",5,Positive,0.65
+2026-07-04,boAt Rockerz 650 Pro,"The headphones are comfortable and touch controls are useful, but the bass tuning and Dolby audio could be better.",5,Positive,0.28
+2026-09-15,pTron Studio Pro,"Happy with my pTron headphones. Sound quality is clear with good bass. They are lightweight, stylish and comfortable with good battery backup.",5,Positive,0.78
+2026-09-24,pTron Studio Pro,"I really love the product. The design, sound quality and especially the battery life are very good.",5,Positive,0.74
+2026-09-20,pTron Studio Pro,"Waste of money. The product looks good, but the voice and bass are very low.",1,Negative,-0.55
+2026-09-01,pTron Studio Pro,"Great product with good sound system and microphone. It fits well and the battery runs almost the whole day.",5,Positive,0.72
+2026-09-11,pTron Studio Pro,"Really happy with these headphones. Sound quality is clear, bass is good and they are comfortable for long hours.",5,Positive,0.76
+2026-07-19,pTron Studio,"Impressive sound quality at this price. The headphones provide powerful bass, clear mids and crisp highs with good battery life. Highly recommended.",5,Positive,0.82
+2026-09-22,pTron Studio,"Nice product and affordable price. It justifies its price.",5,Positive,0.55
+2026-08-20,pTron Studio,"Great product. Sound quality is very good and I am fully satisfied.",5,Positive,0.78
+2026-08-29,pTron Studio,"Very disappointed with the quality. The left side stopped working properly and there are issues with the right side. Warranty support was also difficult.",1,Negative,-0.65
+2026-09-10,pTron Studio,"The headphones are decent and sound quality is good, but the folding mechanism needs improvement. Overall it is okay for the price.",5,Positive,0.30
+2023-12-25,boAt Nirvana 751 ANC,"The boat 751 ANC has very good performance for the price. Sound and ANC are good compared with other headphones in this price range.",5,Positive,0.65
+2022-12-08,boAt Nirvana 751 ANC,"Build quality is superb and battery backup is very good. ANC is average and later there was some static noise, but overall the headphones are good for the price.",5,Positive,0.38
+2026-09-04,boAt Nirvana 751 ANC,"These headphones are great value for money. The quality is very nice and the look of the headphones is awesome.",5,Positive,0.72
+2026-08-20,boAt Nirvana 751 ANC,"The sound quality is extremely poor and disappointing. The audio lacks clarity and does not provide a satisfactory listening experience.",1,Negative,-0.72
+2026-07-03,boAt Nirvana 751 ANC,"Good sound quality and worth the money.",5,Positive,0.65
