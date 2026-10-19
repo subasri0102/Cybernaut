@@ -1,0 +1,114 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+import pandas as pd
+import time
+import os
+
+options = Options()
+driver = webdriver.Chrome(options=options)
+driver.set_page_load_timeout(30)
+
+reviews_data = []
+
+product_list = [
+    {
+        "asin": "B0FG2PWNRC",
+        "product": "boAt Rockerz 512 ANC"
+    },
+    {
+        "asin": "B0DV5J28LW",
+        "product": "boAt Rockerz 650 Pro"
+    },
+    {
+        "asin": "B0H9D2TWK2",
+        "product": "pTron Studio Pro"
+    },
+    {
+        "asin": "B0FQJNJPPV",
+        "product": "pTron Studio"
+    },
+    {
+        "asin": "B09MTQ23X4",
+        "product": "boAt Nirvana 751 ANC"
+    }
+]
+
+try:
+    print("Starting Chrome...")
+
+    for item in product_list:
+
+        product_name = item["product"]
+        asin = item["asin"]
+
+        print("\n======================================")
+        print("Product:", product_name)
+        print("ASIN:", asin)
+        print("======================================")
+
+        product_url = f"https://www.amazon.in/dp/{asin}"
+
+        print("Opening product page...")
+
+        try:
+            driver.get(product_url)
+        except TimeoutException:
+            print("Page loading timeout. Continuing...")
+
+        time.sleep(5)
+
+        print("Page title:", driver.title)
+
+        driver.execute_script(
+            "window.scrollTo(0, document.body.scrollHeight);"
+        )
+
+        time.sleep(5)
+
+        reviews = driver.find_elements(
+            By.CSS_SELECTOR,
+            "div[data-hook='review']"
+        )
+
+        print("Reviews found:", len(reviews))
+
+        for review in reviews[:5]:
+
+            review_text = review.text.strip()
+
+            if review_text:
+
+                reviews_data.append({
+                    "product": product_name,
+                    "asin": asin,
+                    "review": review_text
+                })
+
+finally:
+
+    driver.quit()
+
+    print("\nBrowser closed.")
+
+os.makedirs("data", exist_ok=True)
+
+df = pd.DataFrame(reviews_data)
+
+df.to_csv(
+    "data/scraped_reviews.csv",
+    index=False
+)
+
+print("\n======================================")
+print("REVIEW SCRAPING COMPLETED")
+print("======================================")
+
+print("Total reviews collected:", len(df))
+
+if len(df) > 0:
+    print("\nCollected Reviews:")
+    print(df)
+else:
+    print("\nNo reviews were collected.")
