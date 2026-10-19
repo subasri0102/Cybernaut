@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Classifier</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #101827, #243b55);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 650px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #182848;
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 15px;
+            border: 2px solid #d6dce5;
+            border-radius: 12px;
+            font-size: 16px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #4776e6;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #3159c9;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2445a5;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .spam {
+            background: #ffe5e5;
+            color: #c62828;
+        }
+
+        .ham {
+            background: #e1f7e8;
+            color: #18753b;
+        }
+
+        .footer {
+            margin-top: 25px;
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📩 Email Spam Classifier</h1>
+
+        <p class="subtitle">
+            Check whether your message is Spam or Ham
+        </p>
+
+        <form method="POST">
+            <textarea
+                name="message"
+                placeholder="Type or paste your message here..."
+                required>{{ message or '' }}</textarea>
+
+            <button type="submit">Check Message</button>
+        </form>
+
+        {% if result %}
+        <div class="result {{ 'spam' if result == 'SPAM' else 'ham' }}">
+            Prediction: {{ result }}
+        </div>
+        {% endif %}
+
+        <p class="footer">
+            Machine Learning Based Spam Detection
+        </p>
+    </div>
+</body>
+</html>
