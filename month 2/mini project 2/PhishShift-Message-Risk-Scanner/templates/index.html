@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhishShift | Message Risk Scanner</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #080b18;
+            color: #f4f5ff;
+            min-height: 100vh;
+        }
+
+        nav {
+            min-height: 78px;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #20263d;
+            background: #0b1020;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #8150ff, #4769ff);
+            font-size: 24px;
+        }
+
+        .logo span {
+            color: #a58aff;
+        }
+
+        .status {
+            color: #71e6ad;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 14px;
+            border: 1px solid #214c3c;
+            border-radius: 25px;
+            background: #10251f;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: #71e6ad;
+            border-radius: 50%;
+            margin-right: 7px;
+        }
+
+        main {
+            width: 90%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 65px 0 55px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        .tag {
+            display: inline-block;
+            color: #bba6ff;
+            background: #17152f;
+            border: 1px solid #34275f;
+            padding: 9px 16px;
+            border-radius: 25px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            font-size: clamp(34px, 5vw, 54px);
+            line-height: 1.2;
+            letter-spacing: -1.5px;
+            margin-bottom: 18px;
+        }
+
+        h1 span {
+            color: #8d7aff;
+        }
+
+        .hero p {
+            max-width: 570px;
+            margin: 0 auto;
+            color: #9ba4bd;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .scanner-card {
+            padding: 32px;
+            background: #11182d;
+            border: 1px solid #27314f;
+            border-radius: 22px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 27px;
+        }
+
+        .shield {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: #211a46;
+            border: 1px solid #42336f;
+            font-size: 23px;
+        }
+
+        .card-heading h2 {
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .card-heading p {
+            color: #939db8;
+            font-size: 13px;
+        }
+
+        label {
+            display: block;
+            color: #dce1f3;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            display: block;
+            width: 100%;
+            min-height: 190px;
+            padding: 18px;
+            resize: vertical;
+            background: #0b1020;
+            border: 1px solid #303a59;
+            border-radius: 13px;
+            outline: none;
+            color: #f4f5ff;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.8;
+            transition: border-color 0.2s;
+        }
+
+        textarea::placeholder {
+            color: #737e9a;
+        }
+
+        textarea:focus {
+            border-color: #9175ff;
+            box-shadow: 0 0 0 3px rgba(129, 80, 255, 0.12);
+        }
+
+        .input-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 13px 0 22px;
+            color: #8993ae;
+            font-size: 11px;
+        }
+
+        .scan-btn {
+            width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(100deg, #7548ed, #5368f5);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(100, 76, 245, 0.3);
+        }
+
+        .scan-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 23px;
+            border-radius: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .result.safe {
+            background: #10271f;
+            border: 1px solid #286247;
+        }
+
+        .result.risky {
+            background: #2b1722;
+            border: 1px solid #703346;
+        }
+
+        .result-label {
+            color: #a1aac1;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .result h3 {
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .result.safe h3 {
+            color: #71e6ad;
+        }
+
+        .result.risky h3 {
+            color: #ff8195;
+        }
+
+        .result p {
+            color: #c0c7d9;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 16px 5%;
+                min-height: 70px;
+            }
+
+            .logo {
+                font-size: 19px;
+                gap: 9px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+
+            .status {
+                font-size: 10px;
+                padding: 8px 9px;
+            }
+
+            main {
+                width: 92%;
+                padding-top: 45px;
+            }
+
+            .hero {
+                margin-bottom: 28px;
+            }
+
+            .hero p {
+                font-size: 13px;
+            }
+
+            .scanner-card {
+                padding: 20px;
+                border-radius: 17px;
+            }
+
+            .card-heading h2 {
+                font-size: 17px;
+            }
+
+            .card-heading p {
+                font-size: 12px;
+            }
+
+            textarea {
+                min-height: 160px;
+                font-size: 13px;
+            }
+
+            .scan-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">⌁</div>
+            <div>Phish<span>Shift</span></div>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            READY TO SCAN
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="hero">
+            <div class="tag">SMART THREAT DETECTION</div>
+
+            <h1>Think Before You <span>Click.</span></h1>
+
+            <p>
+                Check suspicious messages before responding.
+                Enter your SMS, email, or text message below
+                to analyse its potential risk.
+            </p>
+        </section>
+
+        <section class="scanner-card">
+
+            <div class="card-heading">
+                <div class="shield">🛡️</div>
+
+                <div>
+                    <h2>Message Risk Scanner</h2>
+                    <p>Enter a message to check whether it may be risky.</p>
+                </div>
+            </div>
+
+            <form method="POST" action="/">
+
+                <label for="message">YOUR MESSAGE</label>
+
+                <textarea
+                    id="message"
+                    name="message"
+                    placeholder="Paste your message here..."
+                    required
+                >{{ message }}</textarea>
+
+                <div class="input-info">
+                    <span>✦ SMS · Email · Text messages</span>
+                    <span>🔒 Avoid entering private information</span>
+                </div>
+
+                <button type="submit" class="scan-btn">
+                    🛡️ &nbsp; Scan Message &nbsp; →
+                </button>
+
+            </form>
+
+            {% if prediction %}
+                <div class="result {{ result_class }}">
+
+                    <div class="result-label">ANALYSIS RESULT</div>
+
+                    {% if result_class == "risky" %}
+                        <h3>⚠️ {{ prediction }}</h3>
+                        <p>
+                            This message has been classified as risky
+                            by the model. Avoid clicking suspicious links
+                            or sharing personal information.
+                        </p>
+                    {% else %}
+                        <h3>✓ {{ prediction }}</h3>
+                        <p>
+                            This message has been classified as safe
+                            by the model. Still verify the sender and
+                            any links before taking action.
+                        </p>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>
